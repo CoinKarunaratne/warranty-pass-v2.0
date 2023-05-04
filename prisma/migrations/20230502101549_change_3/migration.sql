@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Post" ALTER COLUMN "period" SET DATA TYPE TEXT;

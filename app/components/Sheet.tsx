@@ -1,16 +1,16 @@
-import React, { FC, useState } from "react";
 import { Button } from "./ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "./ui/dialog";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "./ui/sheet";
+import { Edit } from "lucide-react";
 import { CalendarDatePicker } from "./DatePicker";
 import { useFormik, FormikHelpers } from "formik";
 import * as yup from "yup";
@@ -19,40 +19,54 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
 import { useToast } from "./ui/use-toast";
 import { addYears, addMonths } from "date-fns";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { storage } from "../firebase-config";
-import { ref as storageRef, uploadBytes } from "firebase/storage";
-
-const postSchema = yup.object().shape({
-  product: yup.string().required("Required"),
-  store: yup.string().required("Required"),
-  period: yup.number().required("Required"),
-});
+import { ref as storageRef, uploadBytes, deleteObject } from "firebase/storage";
 
 type FormValues = {
+  id?: string;
   product: string;
   store: string;
   period: number | undefined;
   date: Date | undefined;
-  type: string;
+  Type: string;
   expiryDate: Date | undefined;
   picture: string;
 };
 
-const postInitial: FormValues = {
-  product: "",
-  store: "",
-  period: undefined,
-  date: undefined,
-  type: "",
-  expiryDate: undefined,
-  picture: "",
-};
+export function SheetDemo({
+  id,
+  product,
+  store,
+  period,
+  date,
+  Type,
+  expiryDate,
+  picture,
+}: FormValues) {
+  const postSchema = yup.object().shape({
+    product: yup.string().required("Required"),
+    store: yup.string().required("Required"),
+    period: yup.number().required("Required"),
+  });
 
-const CreatePost: FC = React.forwardRef((props, ref) => {
+  const postInitial: FormValues = {
+    product: product,
+    store: store,
+    period: period,
+    date: date,
+    Type: Type,
+    expiryDate: expiryDate,
+    picture: "",
+  };
+
   const queryClient = useQueryClient();
+  const router = useRouter();
+
   const { mutate } = useMutation(
     async (values: FormValues) =>
-      await axios.post("/api/posts/addPost", { values }),
+      await axios.post("/api/posts/editPost", { values }),
     {
       onError: (error) => {
         if (error instanceof AxiosError) {
@@ -68,24 +82,13 @@ const CreatePost: FC = React.forwardRef((props, ref) => {
         setIsLoading(false);
         toast({
           title: "Success !",
-          description: "You have successfully uploaded your content",
+          description: "You have successfully updated",
         });
         queryClient.invalidateQueries(["posts"]);
+        router.push("/dashboard");
       },
     }
   );
-
-  const uploadFile = async () => {
-    const filesFolderRef = storageRef(
-      storage,
-      `clientReceipts/${fileUpload.name}`
-    );
-    try {
-      await uploadBytes(filesFolderRef, fileUpload);
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
   const onSubmit = (
     values: FormValues,
@@ -103,11 +106,12 @@ const CreatePost: FC = React.forwardRef((props, ref) => {
       return;
     }
     values.date = Dates;
-    values.type = type;
+    values.Type = type;
+    values.id = id;
     values.picture = fileUpload.name;
-    if (values.type === "years")
+    if (values.Type === "years")
       values.expiryDate = addYears(values.date, values.period);
-    if (values.type === "months")
+    if (values.Type === "months")
       values.expiryDate = addMonths(values.date, values.period);
     uploadFile();
     onSubmitProps.resetForm();
@@ -120,7 +124,22 @@ const CreatePost: FC = React.forwardRef((props, ref) => {
     onSubmit,
   });
 
-  const [Dates, setDates] = useState<Date | undefined>(undefined);
+  const uploadFile = async () => {
+    const filesFolderRef = storageRef(
+      storage,
+      `clientReceipts/${fileUpload.name}`
+    );
+    try {
+      const prevImageRef = storageRef(storage, `clientReceipts/${picture}`);
+      await deleteObject(prevImageRef);
+
+      await uploadBytes(filesFolderRef, fileUpload);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const [Dates, setDates] = useState<Date | undefined>(date);
   const [type, setType] = useState<string>("years");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [dateError, setDateError] = useState<string>("");
@@ -136,18 +155,19 @@ const CreatePost: FC = React.forwardRef((props, ref) => {
   };
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button ref={ref} className="hidden" variant="outline">
-          Edit Profile
+    <Sheet>
+      <SheetTrigger asChild>
+        <Button variant="secondary" className="w-full">
+          <Edit className="mr-2 h-4 w-4" /> Edit Details
         </Button>
-      </DialogTrigger>
-
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Create a Post</DialogTitle>
-          <DialogDescription>Click save when you're done.</DialogDescription>
-        </DialogHeader>
+      </SheetTrigger>
+      <SheetContent position="right" size="sm">
+        <SheetHeader>
+          <SheetTitle>Edit Item</SheetTitle>
+          <SheetDescription>
+            Make changes to your item here. Click save when you're done.
+          </SheetDescription>
+        </SheetHeader>
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="product" className="text-right">
@@ -249,20 +269,12 @@ const CreatePost: FC = React.forwardRef((props, ref) => {
             </p>
           </div>
         </div>
-        <DialogFooter>
-          <Button
-            type="submit"
-            isLoading={isLoading}
-            onClick={formik.handleSubmit}
-          >
+        <SheetFooter>
+          <Button isLoading={isLoading} onClick={formik.handleSubmit}>
             Save changes
           </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </SheetFooter>
+      </SheetContent>
+    </Sheet>
   );
-});
-
-CreatePost.displayName = "CreatePost";
-
-export default CreatePost;
+}

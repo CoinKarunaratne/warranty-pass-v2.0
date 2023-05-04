@@ -1,27 +1,30 @@
 "use client";
 
-import { FC, useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Home, LogOut, Expand, Plus, Building } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import Link from "next/link";
 import CreatePost from "./CreatePost";
+import { getSession } from "next-auth/react";
 
 interface SidebarIconProps {
   icon: React.ReactNode;
   text: string;
 }
 
-interface SidebarProps {
-  user?: {
-    name?: string | null | undefined;
-    email?: string | null | undefined;
-    image?: string | null | undefined;
-  };
-}
-
-const Sidebar: FC<SidebarProps> = ({ user }) => {
+const Sidebar = () => {
   const [expand, setExpand] = useState(false);
+  const [session, setSession] = useState(null);
   const createPostRef = useRef(null);
+
+  const getUser = async () => {
+    const user = await getSession();
+    await setSession(user);
+  };
+
+  useEffect(() => {
+    getUser();
+  }, []);
 
   const SidebarIcon = ({ icon, text }: SidebarIconProps) => (
     <div
@@ -43,36 +46,38 @@ const Sidebar: FC<SidebarProps> = ({ user }) => {
   };
 
   return (
-    <div
-      className={`fixed top-0 left-0 h-screen ${
-        expand ? "w-44" : "w-20"
-      } transition-all duration-300 m-0 flex flex-col justify-between bg-gray-100 dark:bg-gray-900 text-white p-5 shadow-lg`}
-    >
-      <div className="flex flex-row gap-4">
-        <Avatar>
-          <AvatarImage src={user?.image} />
-          <AvatarFallback>CN</AvatarFallback>
-        </Avatar>
-        {expand && <div className="text-sm">{user?.name}</div>}
-      </div>
-      <div>
-        <Link href="/">
-          <SidebarIcon icon={<Home size={26} />} text="Home" />
-        </Link>
-        <CreatePost ref={createPostRef} />
-        <div onClick={handleClick}>
-          <SidebarIcon icon={<Plus size={26} />} text="Add-New" />
-        </div>
-
-        <SidebarIcon icon={<Building size={26} />} text="Stores" />
-        <SidebarIcon icon={<LogOut size={26} />} text="Log-out" />
-      </div>
+    <div className="w-60 h-screen">
       <div
-        onClick={() => {
-          setExpand(!expand);
-        }}
+        className={`fixed top-0 left-0 h-screen ${
+          expand ? "w-44" : "w-20"
+        } transition-all duration-300 m-0 flex flex-col justify-between bg-gray-100 dark:bg-gray-900 text-white p-5 shadow-lg`}
       >
-        <SidebarIcon icon={<Expand size={26} />} text="Expand" />
+        <div className="flex flex-row gap-4">
+          <Avatar>
+            <AvatarImage src={session?.user?.image} />
+            <AvatarFallback>CN</AvatarFallback>
+          </Avatar>
+          {expand && <div className="text-sm">{session?.user?.name}</div>}
+        </div>
+        <div>
+          <Link href="/">
+            <SidebarIcon icon={<Home size={26} />} text="Home" />
+          </Link>
+          <CreatePost ref={createPostRef} />
+          <div onClick={handleClick}>
+            <SidebarIcon icon={<Plus size={26} />} text="Add-New" />
+          </div>
+
+          <SidebarIcon icon={<Building size={26} />} text="Stores" />
+          <SidebarIcon icon={<LogOut size={26} />} text="Log-out" />
+        </div>
+        <div
+          onClick={() => {
+            setExpand(!expand);
+          }}
+        >
+          <SidebarIcon icon={<Expand size={26} />} text="Expand" />
+        </div>
       </div>
     </div>
   );
