@@ -18,7 +18,7 @@ import { storage } from "../firebase-config";
 import { ref as storageRef, deleteObject } from "firebase/storage";
 
 type DeleteProp = {
-  id: string;
+  id: string | undefined;
   picture: string;
 };
 

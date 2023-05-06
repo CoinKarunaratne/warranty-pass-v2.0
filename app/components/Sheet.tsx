@@ -26,12 +26,12 @@ import { ref as storageRef, uploadBytes, deleteObject } from "firebase/storage";
 
 type FormValues = {
   id?: string;
-  product: string;
-  store: string;
-  period: number | undefined;
-  date: Date | undefined;
-  Type: string;
-  expiryDate: Date | undefined;
+  product: string | undefined;
+  store: string | undefined;
+  period: number;
+  date: any;
+  Type: string | undefined;
+  expiryDate: any;
   picture: string;
 };
 
@@ -127,27 +127,29 @@ export function SheetDemo({
   const uploadFile = async () => {
     const filesFolderRef = storageRef(
       storage,
-      `clientReceipts/${fileUpload.name}`
+      `clientReceipts/${fileUpload?.name}`
     );
     try {
       const prevImageRef = storageRef(storage, `clientReceipts/${picture}`);
       await deleteObject(prevImageRef);
 
-      await uploadBytes(filesFolderRef, fileUpload);
+      if (fileUpload) {
+        await uploadBytes(filesFolderRef, fileUpload);
+      }
     } catch (err) {
       console.log(err);
     }
   };
 
-  const [Dates, setDates] = useState<Date | undefined>(date);
+  const [Dates, setDates] = useState<string | undefined>(date);
   const [type, setType] = useState<string>("years");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [dateError, setDateError] = useState<string>("");
   const [fileError, setFileError] = useState<string>("");
-  const [fileUpload, setFileUpload] = useState(null);
+  const [fileUpload, setFileUpload] = useState<File | null>(null);
   const { toast } = useToast();
 
-  const DatePicker = (date: Date | undefined) => {
+  const DatePicker = (date: string | undefined) => {
     setDates(date);
     if (date) {
       setDateError("");
@@ -156,125 +158,132 @@ export function SheetDemo({
 
   return (
     <Sheet>
-      <SheetTrigger asChild>
-        <Button variant="secondary" className="w-full">
-          <Edit className="mr-2 h-4 w-4" /> Edit Details
-        </Button>
-      </SheetTrigger>
-      <SheetContent position="right" size="sm">
-        <SheetHeader>
-          <SheetTitle>Edit Item</SheetTitle>
-          <SheetDescription>
-            Make changes to your item here. Click save when you are done.
-          </SheetDescription>
-        </SheetHeader>
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="product" className="text-right">
-              Product
-            </Label>
-            <Input
-              id="product"
-              value={formik.values.product}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              className="col-span-3"
-            />
-            {formik.errors.product && formik.touched.product && (
-              <p className="text-[#fc8181] text-[0.75rem] col-span-4 text-right">
-                {formik.errors.product}
-              </p>
-            )}
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="store" className="text-right">
-              Store
-            </Label>
-            <Input
-              id="store"
-              value={formik.values.store}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              className="col-span-3"
-            />
-            {formik.errors.store && formik.touched.store && (
-              <p className="text-[#fc8181] text-[0.75rem] col-span-4 text-right">
-                {formik.errors.store}
-              </p>
-            )}
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="period" className="text-right">
-              Period
-            </Label>
-            <Input
-              id="period"
-              value={formik.values.period}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              className="col-span-3"
-            />
-            <RadioGroup
-              defaultValue="years"
-              className="col-span-4 flex flex-row gap-4 justify-center"
-            >
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem
-                  value="years"
-                  id="type"
-                  onClick={() => setType("years")}
-                />
-                <Label htmlFor="r1">Years</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem
-                  value="months"
-                  id="type"
-                  onClick={() => setType("months")}
-                />
-                <Label htmlFor="r2">Months</Label>
-              </div>
-            </RadioGroup>
-            {formik.errors.period && formik.touched.period && (
-              <p className="text-[#fc8181] text-[0.75rem] col-span-4 text-right">
-                {formik.errors.period}
-              </p>
-            )}
-          </div>
-
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="date" className="text-right">
-              When did you buy?
-            </Label>
-            <CalendarDatePicker DatePicker={DatePicker} />
-
-            <p className="text-[#fc8181] text-[0.75rem] col-span-4 text-right">
-              {dateError}
-            </p>
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="picture" className="text-right">
-              Receipt
-            </Label>
-            <Input
-              id="picture"
-              type="file"
-              accept="image/*"
-              onChange={(e) => setFileUpload(e.target.files[0])}
-              className="col-span-3"
-            />
-
-            <p className="text-[#fc8181] text-[0.75rem] col-span-4 text-right">
-              {fileError}
-            </p>
-          </div>
-        </div>
-        <SheetFooter>
-          <Button isLoading={isLoading} onClick={formik.handleSubmit}>
-            Save changes
+      <form onSubmit={formik.handleSubmit}>
+        <SheetTrigger asChild>
+          <Button variant="secondary" className="w-full">
+            <Edit className="mr-2 h-4 w-4" /> Edit Details
           </Button>
-        </SheetFooter>
-      </SheetContent>
+        </SheetTrigger>
+        <SheetContent position="right" size="sm">
+          <SheetHeader>
+            <SheetTitle>Edit Item</SheetTitle>
+            <SheetDescription>
+              Make changes to your item here. Click save when you are done.
+            </SheetDescription>
+          </SheetHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="product" className="text-right">
+                Product
+              </Label>
+              <Input
+                id="product"
+                value={formik.values.product}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                className="col-span-3"
+              />
+              {formik.errors.product && formik.touched.product && (
+                <p className="text-[#fc8181] text-[0.75rem] col-span-4 text-right">
+                  {formik.errors.product}
+                </p>
+              )}
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="store" className="text-right">
+                Store
+              </Label>
+              <Input
+                id="store"
+                value={formik.values.store}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                className="col-span-3"
+              />
+              {formik.errors.store && formik.touched.store && (
+                <p className="text-[#fc8181] text-[0.75rem] col-span-4 text-right">
+                  {formik.errors.store}
+                </p>
+              )}
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="period" className="text-right">
+                Period
+              </Label>
+              <Input
+                id="period"
+                value={formik.values.period}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                className="col-span-3"
+              />
+              <RadioGroup
+                defaultValue="years"
+                className="col-span-4 flex flex-row gap-4 justify-center"
+              >
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem
+                    value="years"
+                    id="type"
+                    onClick={() => setType("years")}
+                  />
+                  <Label htmlFor="r1">Years</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem
+                    value="months"
+                    id="type"
+                    onClick={() => setType("months")}
+                  />
+                  <Label htmlFor="r2">Months</Label>
+                </div>
+              </RadioGroup>
+              {formik.errors.period && formik.touched.period && (
+                <p className="text-[#fc8181] text-[0.75rem] col-span-4 text-right">
+                  {formik.errors.period}
+                </p>
+              )}
+            </div>
+
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="date" className="text-right">
+                When did you buy?
+              </Label>
+              <CalendarDatePicker DatePicker={DatePicker} />
+
+              <p className="text-[#fc8181] text-[0.75rem] col-span-4 text-right">
+                {dateError}
+              </p>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="picture" className="text-right">
+                Receipt
+              </Label>
+              <Input
+                id="picture"
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const files = e.target.files;
+                  if (files && files.length > 0) {
+                    setFileUpload(files[0]);
+                  }
+                }}
+                className="col-span-3"
+              />
+
+              <p className="text-[#fc8181] text-[0.75rem] col-span-4 text-right">
+                {fileError}
+              </p>
+            </div>
+          </div>
+          <SheetFooter>
+            <Button type="submit" isLoading={isLoading}>
+              Save changes
+            </Button>
+          </SheetFooter>
+        </SheetContent>
+      </form>
     </Sheet>
   );
 }

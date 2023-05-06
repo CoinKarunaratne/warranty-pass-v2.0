@@ -18,7 +18,7 @@ const fetchDetails = async (id: string) => {
 };
 
 const PostDetails = (url: URL) => {
-  const { data, isLoading } = useQuery<PostType[]>({
+  const { data, isLoading } = useQuery<PostType>({
     queryFn: () => fetchDetails(url.params.id),
     queryKey: ["detail-post"],
   });
@@ -48,7 +48,6 @@ const PostDetails = (url: URL) => {
             product={data?.product}
             store={data?.store}
             type={data?.type}
-            userId={data?.user.id}
             picture={data?.picture}
           />
         </div>

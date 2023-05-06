@@ -8,6 +8,7 @@ import CreatePost from "./CreatePost";
 import { getSession } from "next-auth/react";
 import { useToast } from "./ui/use-toast";
 import { signOut } from "next-auth/react";
+import { Session } from "next-auth";
 
 interface SidebarIconProps {
   icon: React.ReactNode;
@@ -16,8 +17,8 @@ interface SidebarIconProps {
 
 const Sidebar = () => {
   const [expand, setExpand] = useState(false);
-  const [session, setSession] = useState(null);
-  const createPostRef = useRef(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const createPostRef = useRef<HTMLButtonElement>(null);
 
   const getUser = async () => {
     const user = await getSession();
@@ -63,7 +64,9 @@ const Sidebar = () => {
   );
 
   const handleClick = () => {
-    createPostRef.current.click();
+    if (createPostRef.current) {
+      createPostRef.current.click();
+    }
   };
 
   return (
@@ -75,7 +78,7 @@ const Sidebar = () => {
       >
         <div className="flex flex-row gap-4">
           <Avatar>
-            <AvatarImage src={session?.user?.image} />
+            <AvatarImage src={session?.user?.image || "default-image.jpg"} />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
           {expand && <div className="text-sm">{session?.user?.name}</div>}
@@ -84,7 +87,7 @@ const Sidebar = () => {
           <Link href="/">
             <SidebarIcon icon={<Home size={26} />} text="Home" />
           </Link>
-          <CreatePost ref={createPostRef} />
+          <CreatePost buttonRef={createPostRef} />
           <div onClick={handleClick}>
             <SidebarIcon icon={<Plus size={26} />} text="Add-New" />
           </div>

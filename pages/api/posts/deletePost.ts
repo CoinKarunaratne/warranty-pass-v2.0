@@ -8,7 +8,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const session = await getServerSession(req, res, authOptions);
     if (!session) return res.status(401).json({ message: "Please sign in" });
     try {
-      const postId = req.query.id;
+      const postId = req.query.id?.toString() ?? "";
       const result = await prisma.post.delete({
         where: {
           id: postId,

@@ -21,9 +21,9 @@ const SignInButton: FC<SignInButtonProps> = ({ type }) => {
       });
     } catch (error) {
       toast({
+        variant: "destructive",
         title: "Error signing in",
-        message: "Please try again later.",
-        type: "error",
+        description: "Please try again later.",
       });
     }
   };
@@ -36,9 +36,9 @@ const SignInButton: FC<SignInButtonProps> = ({ type }) => {
       });
     } catch (error) {
       toast({
+        variant: "destructive",
         title: "Error signing in",
-        message: "Please try again later.",
-        type: "error",
+        description: "Please try again later.",
       });
     }
   };

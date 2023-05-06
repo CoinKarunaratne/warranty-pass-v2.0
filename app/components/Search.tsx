@@ -6,7 +6,7 @@ import { SearchIcon } from "lucide-react";
 import { useToast } from "./ui/use-toast";
 
 type SearchProps = {
-  handleSearch: (value: string) => void;
+  handleSearch?: (value: string) => void;
 };
 
 const Search = ({ handleSearch }: SearchProps) => {
@@ -21,10 +21,12 @@ const Search = ({ handleSearch }: SearchProps) => {
         description: "Please type something!",
       });
     }
-    handleSearch(search);
+    if (handleSearch) {
+      handleSearch(search);
+    }
   };
 
-  const handleKeyDown = (event) => {
+  const handleKeyDown = (event: any) => {
     if (event.keyCode === 13) {
       // 13 is the keyCode for "Enter" key
       handleSubmit();

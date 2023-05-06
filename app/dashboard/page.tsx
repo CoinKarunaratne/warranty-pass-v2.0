@@ -57,7 +57,6 @@ const Dashboard = ({}) => {
                     product={posts.product}
                     store={posts.store}
                     type={posts.type}
-                    userId={posts.user.id}
                   />
                 ))
             : data?.map((posts) => (
@@ -71,7 +70,6 @@ const Dashboard = ({}) => {
                   product={posts.product}
                   store={posts.store}
                   type={posts.type}
-                  userId={posts.user.id}
                 />
               ))}
         </div>

@@ -28,7 +28,8 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "app/GlobalState.js"
+    "app/GlobalState.js",
+    "app/components/CreatePost.tsx"
   ],
   "exclude": ["node_modules"]
 }

@@ -26,7 +26,6 @@ export const CardDemo = ({
   product,
   store,
   type,
-  userId,
 }: PostType) => {
   const [progress, setProgress] = useState(10);
 

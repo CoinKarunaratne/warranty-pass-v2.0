@@ -22,7 +22,11 @@ const Dashboard = ({}) => {
   if (error) return <Error error={error} />;
   if (isLoading) return <Loading />;
 
-  const storeCounts = data?.reduce((acc, post) => {
+  type StoreCounts = {
+    [key: string]: number;
+  };
+
+  const storeCounts = data?.reduce((acc: StoreCounts, post) => {
     const { store } = post;
     if (acc[store]) {
       acc[store]++;
@@ -32,10 +36,12 @@ const Dashboard = ({}) => {
     return acc;
   }, {});
 
-  const stores = Object.keys(storeCounts).map((storeName) => ({
-    name: storeName,
-    count: storeCounts[storeName],
-  }));
+  const stores = storeCounts
+    ? Object.keys(storeCounts).map((storeName) => ({
+        name: storeName,
+        count: storeCounts[storeName],
+      }))
+    : [];
 
   return (
     <div className="flex flex-row gap-1">

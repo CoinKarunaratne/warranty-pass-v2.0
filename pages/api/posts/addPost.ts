@@ -20,20 +20,21 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       return res.status(401).json({ message: "Please sign in to make a post" });
     const post: FormValues = req.body.values;
     const prismaUser = await prisma.user.findUnique({
-      where: { email: session?.user?.email },
+      where: { email: session!.user!.email! },
     });
+    const prismaUserId = prismaUser?.id!;
 
     try {
       const result = await prisma.post.create({
         data: {
-          product: post.product,
-          store: post.store,
-          period: post.period,
-          date: post.date,
-          type: post.type,
-          expiryDate: post.expiryDate,
-          userId: prismaUser?.id,
-          picture: post.picture,
+          product: post?.product,
+          store: post?.store,
+          period: post?.period,
+          date: post?.date,
+          type: post?.type,
+          expiryDate: post?.expiryDate,
+          userId: prismaUserId,
+          picture: post?.picture,
         },
       });
 

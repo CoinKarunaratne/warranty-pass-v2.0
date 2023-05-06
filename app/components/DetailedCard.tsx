@@ -18,6 +18,18 @@ import { DeletePost } from "./DeletePost";
 import { storage } from "../firebase-config";
 import { ref as storageRef, getDownloadURL } from "firebase/storage";
 
+type Props = {
+  id: string | undefined;
+  createdAt: any;
+  date: any;
+  expiryDate: any;
+  period: number;
+  product: string | undefined;
+  store: string | undefined;
+  type: string | undefined;
+  picture: string;
+};
+
 export const DetailedCard = ({
   id,
   createdAt,
@@ -27,9 +39,8 @@ export const DetailedCard = ({
   product,
   store,
   type,
-  userId,
   picture,
-}: PostType) => {
+}: Props) => {
   const [progress, setProgress] = useState(10);
 
   const completeDiff = differenceInDays(parseISO(expiryDate), parseISO(date));

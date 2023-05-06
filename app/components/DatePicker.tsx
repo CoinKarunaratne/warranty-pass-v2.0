@@ -10,11 +10,11 @@ import { Calendar } from "./ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 
 type Props = {
-  DatePicker: (data: Date | undefined) => void;
+  DatePicker: (data: string | undefined) => void;
 };
 
 export function CalendarDatePicker({ DatePicker }: Props) {
-  const [date, setDate] = React.useState<Date>();
+  const [date, setDate] = React.useState<any>();
 
   DatePicker(date);
 
