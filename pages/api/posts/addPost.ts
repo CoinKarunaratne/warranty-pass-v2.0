@@ -32,10 +32,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           date: post.date,
           type: post.type,
           expiryDate: post.expiryDate,
-          userId: prismaUser.id,
+          userId: prismaUser?.id,
           picture: post.picture,
         },
       });
+
       return res.status(200).json(result);
     } catch (err) {
       console.log(err);

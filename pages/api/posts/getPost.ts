@@ -7,9 +7,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "GET") {
     const session = await getServerSession(req, res, authOptions);
     if (!session) return res.status(401).json({ message: "Please sign in" });
+    const prismaUser = await prisma.user.findUnique({
+      where: { email: session?.user?.email },
+    });
     try {
       const data = await prisma.post.findMany({
-        where: { userId: session?.user?.id },
+        where: { userId: prismaUser?.id },
         include: {
           user: true,
         },

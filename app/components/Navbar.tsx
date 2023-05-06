@@ -17,6 +17,25 @@ async function Navbar() {
 
         <div className="md:hidden">
           <ThemeToggle />
+          {!session?.user && (
+            <Link
+              className={buttonVariants({ variant: "ghost" })}
+              href="/authentication"
+            >
+              Sign In
+            </Link>
+          )}
+          {session?.user && (
+            <>
+              <Link
+                className={buttonVariants({ variant: "ghost" })}
+                href="/dashboard"
+              >
+                Dashboard
+              </Link>
+              <SignOutButton />
+            </>
+          )}
         </div>
 
         <div className="hidden md:flex gap-4">

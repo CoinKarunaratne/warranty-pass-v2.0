@@ -1,3 +1,5 @@
+"use client";
+
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
 import {
@@ -58,7 +60,7 @@ export const CardDemo = ({
   return (
     <Card
       className={cn(
-        "w-[300px] bg-transparent h-[450px] transition-all duration-300 ease-linear"
+        "w-auto bg-transparent h-auto transition-all duration-300 ease-linear"
       )}
     >
       <CardHeader>

@@ -1,11 +1,13 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Home, LogOut, Expand, Plus, Building } from "lucide-react";
+import { Home, LogOut, Expand, Plus, Building, Wallet } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import Link from "next/link";
 import CreatePost from "./CreatePost";
 import { getSession } from "next-auth/react";
+import { useToast } from "./ui/use-toast";
+import { signOut } from "next-auth/react";
 
 interface SidebarIconProps {
   icon: React.ReactNode;
@@ -25,6 +27,25 @@ const Sidebar = () => {
   useEffect(() => {
     getUser();
   }, []);
+
+  const { toast } = useToast();
+
+  const signUserOut = async () => {
+    try {
+      toast({
+        title: "Signing you out !",
+      });
+      await signOut({
+        callbackUrl: `${window.location.origin}`,
+      });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: "There was a problem with your request.",
+      });
+    }
+  };
 
   const SidebarIcon = ({ icon, text }: SidebarIconProps) => (
     <div
@@ -46,9 +67,9 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="w-60 h-screen">
+    <div className="w-44 h-screen">
       <div
-        className={`fixed top-0 left-0 h-screen ${
+        className={`fixed z-20 top-0 left-0 h-screen ${
           expand ? "w-44" : "w-20"
         } transition-all duration-300 m-0 flex flex-col justify-between bg-gray-100 dark:bg-gray-900 text-white p-5 shadow-lg`}
       >
@@ -67,9 +88,15 @@ const Sidebar = () => {
           <div onClick={handleClick}>
             <SidebarIcon icon={<Plus size={26} />} text="Add-New" />
           </div>
-
-          <SidebarIcon icon={<Building size={26} />} text="Stores" />
-          <SidebarIcon icon={<LogOut size={26} />} text="Log-out" />
+          <Link href="/dashboard">
+            <SidebarIcon icon={<Wallet size={26} />} text="Wallet" />
+          </Link>
+          <Link href="/stores">
+            <SidebarIcon icon={<Building size={26} />} text="Stores" />
+          </Link>
+          <div onClick={signUserOut}>
+            <SidebarIcon icon={<LogOut size={26} />} text="Log-out" />
+          </div>
         </div>
         <div
           onClick={() => {

@@ -16,7 +16,9 @@ const SignInButton: FC<SignInButtonProps> = ({ type }) => {
   const signInWithGoogle = async () => {
     try {
       setIsLoading(true);
-      await signIn("google");
+      await signIn("google", {
+        callbackUrl: `${window.location.origin}/dashboard`,
+      });
     } catch (error) {
       toast({
         title: "Error signing in",
@@ -29,7 +31,9 @@ const SignInButton: FC<SignInButtonProps> = ({ type }) => {
   const signInWithGithub = async () => {
     try {
       setIsLoading(true);
-      await signIn("github");
+      await signIn("github", {
+        callbackUrl: `${window.location.origin}/dashboard`,
+      });
     } catch (error) {
       toast({
         title: "Error signing in",
