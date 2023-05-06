@@ -31,7 +31,7 @@ async function Navbar() {
                 className={buttonVariants({ variant: "ghost" })}
                 href="/dashboard"
               >
-                Dashboar
+                Dashboard
               </Link>
               <SignOutButton />
             </>
