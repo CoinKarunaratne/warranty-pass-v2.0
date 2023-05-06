@@ -1,3 +1,5 @@
+"use client";
+
 import Navbar from "./components/Navbar";
 import LargeHeading from "@/app/components/ui/LargeHeading";
 import Paragraph from "@/app/components/ui/Paragraph";
