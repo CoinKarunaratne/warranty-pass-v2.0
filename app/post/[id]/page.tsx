@@ -25,7 +25,7 @@ const PostDetails = (url: URL) => {
   if (isLoading) return "Loading...";
   return (
     <div className="relative h-screen flex items-center justify-center overflow-x-hidden">
-      {/* <div className="container pt-32 max-w-7xl w-full mx-auto h-full">
+      <div className="container pt-32 max-w-7xl w-full mx-auto h-full">
         <div className="h-full gap-6 flex flex-col justify-start lg:justify-center items-center lg:items-start">
           <div className="relative w-full max-w-xl lg:max-w-3xl lg:left-1/2 aspect-square lg:absolute">
             <Image
@@ -51,7 +51,7 @@ const PostDetails = (url: URL) => {
             picture={data?.picture}
           />
         </div>
-      </div> */}
+      </div>
     </div>
   );
 };

@@ -45,7 +45,7 @@ const Dashboard = ({}) => {
 
   return (
     <div className="flex flex-row gap-1">
-      {/* <Sidebar />
+      <Sidebar />
       <div className="flex flex-col w-full">
         <div className="h-[10vh]"></div>
         <div className="py-10 w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -53,7 +53,7 @@ const Dashboard = ({}) => {
             <StoreCard key={posts.name} name={posts.name} count={posts.count} />
           ))}
         </div>
-      </div> */}
+      </div>
     </div>
   );
 };
