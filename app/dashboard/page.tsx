@@ -34,7 +34,7 @@ const Dashboard = ({}) => {
   };
   return (
     <div className="flex flex-row gap-1">
-      {/* <Sidebar />
+      <Sidebar />
       <div className="flex flex-col w-full">
         <Search handleSearch={handleSearch} />
         {search !== "" && (
@@ -73,7 +73,7 @@ const Dashboard = ({}) => {
                 />
               ))}
         </div>
-      </div> */}
+      </div>
     </div>
   );
 };
