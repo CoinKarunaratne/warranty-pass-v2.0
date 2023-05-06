@@ -165,7 +165,7 @@ export function SheetDemo({
         <SheetHeader>
           <SheetTitle>Edit Item</SheetTitle>
           <SheetDescription>
-            Make changes to your item here. Click save when you're done.
+            Make changes to your item here. Click save when you are done.
           </SheetDescription>
         </SheetHeader>
         <div className="grid gap-4 py-4">
