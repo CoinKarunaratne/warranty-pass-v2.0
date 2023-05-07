@@ -33,7 +33,9 @@ async function Navbar() {
               >
                 Dashboard
               </Link>
-              <SignOutButton />
+              <div className="hidden sm:inline-block">
+                <SignOutButton />
+              </div>
             </>
           )}
         </div>
