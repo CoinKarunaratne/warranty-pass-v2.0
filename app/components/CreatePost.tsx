@@ -25,7 +25,7 @@ import { ref as storageRef, uploadBytes } from "firebase/storage";
 const postSchema = yup.object().shape({
   product: yup.string().required("Required"),
   store: yup.string().required("Required"),
-  period: yup.number().required("Required"),
+  period: yup.number().integer().positive().required("Required"),
 });
 
 type FormValues = {
@@ -144,133 +144,131 @@ const CreatePost: FC<CreatePostProps> = React.forwardRef(
 
     return (
       <Dialog>
-        <form onSubmit={formik.handleSubmit}>
-          <DialogTrigger asChild>
-            <Button ref={buttonRef} className="hidden" variant="outline">
-              Edit Profile
-            </Button>
-          </DialogTrigger>
+        <DialogTrigger asChild>
+          <Button ref={buttonRef} className="hidden" variant="outline">
+            Edit Profile
+          </Button>
+        </DialogTrigger>
 
-          <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader>
-              <DialogTitle>Create a Post</DialogTitle>
-              <DialogDescription>
-                Click save when you are done.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="product" className="text-right">
-                  Product
-                </Label>
-                <Input
-                  id="product"
-                  value={formik.values.product}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  className="col-span-3"
-                />
-                {formik.errors.product && formik.touched.product && (
-                  <p className="text-[#fc8181] text-[0.75rem] col-span-4 text-right">
-                    {formik.errors.product}
-                  </p>
-                )}
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="store" className="text-right">
-                  Store
-                </Label>
-                <Input
-                  id="store"
-                  value={formik.values.store}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  className="col-span-3"
-                />
-                {formik.errors.store && formik.touched.store && (
-                  <p className="text-[#fc8181] text-[0.75rem] col-span-4 text-right">
-                    {formik.errors.store}
-                  </p>
-                )}
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="period" className="text-right">
-                  Period
-                </Label>
-                <Input
-                  id="period"
-                  value={formik.values.period}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  className="col-span-3"
-                />
-                <RadioGroup
-                  defaultValue="years"
-                  className="col-span-4 flex flex-row gap-4 justify-center"
-                >
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem
-                      value="years"
-                      id="type"
-                      onClick={() => setType("years")}
-                    />
-                    <Label htmlFor="r1">Years</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem
-                      value="months"
-                      id="type"
-                      onClick={() => setType("months")}
-                    />
-                    <Label htmlFor="r2">Months</Label>
-                  </div>
-                </RadioGroup>
-                {formik.errors.period && formik.touched.period && (
-                  <p className="text-[#fc8181] text-[0.75rem] col-span-4 text-right">
-                    {formik.errors.period}
-                  </p>
-                )}
-              </div>
-
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="date" className="text-right">
-                  When did you buy?
-                </Label>
-                <CalendarDatePicker DatePicker={DatePicker} />
-
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Create a Post</DialogTitle>
+            <DialogDescription>Click save when you are done.</DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="product" className="text-right">
+                Product
+              </Label>
+              <Input
+                id="product"
+                value={formik.values.product}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                className="col-span-3"
+              />
+              {formik.errors.product && formik.touched.product && (
                 <p className="text-[#fc8181] text-[0.75rem] col-span-4 text-right">
-                  {dateError}
+                  {formik.errors.product}
                 </p>
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="picture" className="text-right">
-                  Receipt
-                </Label>
-                <Input
-                  id="picture"
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => {
-                    const files = e.target.files;
-                    if (files && files.length > 0) {
-                      setFileUpload(files[0]);
-                    }
-                  }}
-                  className="col-span-3"
-                />
-
-                <p className="text-[#fc8181] text-[0.75rem] col-span-4 text-right">
-                  {fileError}
-                </p>
-              </div>
+              )}
             </div>
-            <DialogFooter>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="store" className="text-right">
+                Store
+              </Label>
+              <Input
+                id="store"
+                value={formik.values.store}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                className="col-span-3"
+              />
+              {formik.errors.store && formik.touched.store && (
+                <p className="text-[#fc8181] text-[0.75rem] col-span-4 text-right">
+                  {formik.errors.store}
+                </p>
+              )}
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="period" className="text-right">
+                Period
+              </Label>
+              <Input
+                id="period"
+                value={formik.values.period}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                className="col-span-3"
+              />
+              <RadioGroup
+                defaultValue="years"
+                className="col-span-4 flex flex-row gap-4 justify-center"
+              >
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem
+                    value="years"
+                    id="type"
+                    onClick={() => setType("years")}
+                  />
+                  <Label htmlFor="r1">Years</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem
+                    value="months"
+                    id="type"
+                    onClick={() => setType("months")}
+                  />
+                  <Label htmlFor="r2">Months</Label>
+                </div>
+              </RadioGroup>
+              {formik.errors.period && formik.touched.period && (
+                <p className="text-[#fc8181] text-[0.75rem] col-span-4 text-right">
+                  {formik.errors.period}
+                </p>
+              )}
+            </div>
+
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="date" className="text-right">
+                When did you buy?
+              </Label>
+              <CalendarDatePicker DatePicker={DatePicker} />
+
+              <p className="text-[#fc8181] text-[0.75rem] col-span-4 text-right">
+                {dateError}
+              </p>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="picture" className="text-right">
+                Receipt
+              </Label>
+              <Input
+                id="picture"
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const files = e.target.files;
+                  if (files && files.length > 0) {
+                    setFileUpload(files[0]);
+                  }
+                }}
+                className="col-span-3"
+              />
+
+              <p className="text-[#fc8181] text-[0.75rem] col-span-4 text-right">
+                {fileError}
+              </p>
+            </div>
+          </div>
+          <DialogFooter>
+            <form onSubmit={formik.handleSubmit}>
               <Button type="submit" isLoading={isLoading}>
                 Save changes
               </Button>
-            </DialogFooter>
-          </DialogContent>
-        </form>
+            </form>
+          </DialogFooter>
+        </DialogContent>
       </Dialog>
     );
   }
