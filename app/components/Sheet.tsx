@@ -163,7 +163,7 @@ export function SheetDemo({
           <Edit className="mr-2 h-4 w-4" /> Edit Details
         </Button>
       </SheetTrigger>
-      <SheetContent position="right" size="sm">
+      <SheetContent position="right" size="content">
         <SheetHeader>
           <SheetTitle>Edit Item</SheetTitle>
           <SheetDescription>
