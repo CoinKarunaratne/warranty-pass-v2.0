@@ -29,7 +29,8 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "app/GlobalState.js",
-    "app/components/CreatePost.tsx"
+    "app/components/CreatePost.tsx",
+    "prisma/client.js"
   ],
   "exclude": ["node_modules"]
 }
