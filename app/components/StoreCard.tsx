@@ -12,7 +12,7 @@ export const StoreCard = ({ name, count }: Props) => {
   return (
     <Card
       className={cn(
-        "w-[200px] sm:w-[300px] bg-transparent h-[120px] transition-all duration-300 ease-linear"
+        "w-auto bg-transparent h-[120px] transition-all duration-300 ease-linear"
       )}
     >
       <CardHeader>
