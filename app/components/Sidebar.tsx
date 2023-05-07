@@ -70,7 +70,7 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="w-44 h-screen">
+    <div className="w-20 h-screen">
       <div
         className={`fixed z-20 top-0 left-0 h-screen ${
           expand ? "w-44" : "w-20"
